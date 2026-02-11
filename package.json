@@ -1,0 +1,34 @@
+{
+  "name": "fin-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "sst dev",
+    "lint": "eslint",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.980.0",
+    "@aws-sdk/lib-dynamodb": "^3.980.0",
+    "@tanstack/react-query": "^5.90.20",
+    "lucide-react": "^0.563.0",
+    "next": "16.1.5",
+    "next-auth": "^5.0.0-beta.30",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.7.0",
+    "sst": "3.17.25"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
