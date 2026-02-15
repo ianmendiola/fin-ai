@@ -10,8 +10,29 @@ import { useChat } from "@/app/hooks/useChat";
 import { Citrus, LogOut, ChevronLeft, MessageSquare } from "lucide-react";
 
 async function handleSignOut() {
-  await fetch("/api/signout", { method: "POST" });
-  window.location.href = "/login";
+  const res = await fetch("/api/auth/csrf");
+  const { csrfToken } = await res.json();
+
+  // Use a real form submission — browser handles Set-Cookie
+  // headers from the redirect chain, which AJAX fetch does not
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "/api/auth/signout";
+
+  const csrf = document.createElement("input");
+  csrf.type = "hidden";
+  csrf.name = "csrfToken";
+  csrf.value = csrfToken;
+  form.appendChild(csrf);
+
+  const cb = document.createElement("input");
+  cb.type = "hidden";
+  cb.name = "callbackUrl";
+  cb.value = "/login";
+  form.appendChild(cb);
+
+  document.body.appendChild(form);
+  form.submit();
 }
 
 export default function Home() {
