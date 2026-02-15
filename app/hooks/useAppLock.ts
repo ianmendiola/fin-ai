@@ -37,7 +37,7 @@ export function useAppLock() {
   useEffect(() => {
     if (isLoginPage || isLocalhost) return;
 
-    fetch("/api/auth/session")
+    fetch(`/api/auth/session?_=${Date.now()}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((s) => setHasSession(!!s?.user))
       .catch(() => setHasSession(false));
