@@ -43,7 +43,7 @@ export default function Home() {
             <MessageSquare className="w-5 h-5" />
           </button>
           <button
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: "/login" })}
             className="p-2 rounded-full text-muted hover:text-foreground transition-colors"
             aria-label="Sign out"
           >
