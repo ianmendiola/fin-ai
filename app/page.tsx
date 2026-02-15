@@ -10,13 +10,7 @@ import { useChat } from "@/app/hooks/useChat";
 import { Citrus, LogOut, ChevronLeft, MessageSquare } from "lucide-react";
 
 async function handleSignOut() {
-  const res = await fetch("/api/auth/csrf");
-  const { csrfToken } = await res.json();
-  await fetch("/api/auth/signout", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ csrfToken, callbackUrl: "/login" }),
-  });
+  await fetch("/api/signout", { method: "POST" });
   window.location.href = "/login";
 }
 
