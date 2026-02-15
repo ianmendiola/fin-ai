@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UploadForm from "@/app/components/UploadForm";
 import SummaryTable from "@/app/components/SummaryTable";
 import Overview from "@/app/components/Overview";
@@ -21,12 +21,36 @@ async function handleSignOut() {
 }
 
 export default function Home() {
+  const [authed, setAuthed] = useState<boolean | null>(null);
   const { data: summaries, isLoading } = useMonthlySummaries();
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
 
   const { messages, isStreaming, sendMessage, stopStreaming, clearMessages } =
     useChat(summaries);
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((s) => {
+        if (!s?.user) {
+          window.location.href = "/login";
+        } else {
+          setAuthed(true);
+        }
+      })
+      .catch(() => {
+        window.location.href = "/login";
+      });
+  }, []);
+
+  if (!authed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted text-lg">Loading...</p>
+      </div>
+    );
+  }
 
   const hasData = summaries && summaries.length > 0;
 
