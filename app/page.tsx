@@ -21,7 +21,7 @@ export default function Home() {
   const hasData = summaries && summaries.length > 0;
 
   return (
-    <div className="min-h-screen max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div className="min-h-screen max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 pt-[max(1.5rem,env(safe-area-inset-top))]">
       <header className="flex items-center justify-between mb-8 sm:mb-10">
         {selectedMonth ? (
           <button
