@@ -7,8 +7,18 @@ import Overview from "@/app/components/Overview";
 import ChatPanel from "@/app/components/ChatPanel";
 import { useMonthlySummaries } from "@/app/hooks/useMonthlySummaries";
 import { useChat } from "@/app/hooks/useChat";
-import { signOut } from "next-auth/react";
 import { Citrus, LogOut, ChevronLeft, MessageSquare } from "lucide-react";
+
+async function handleSignOut() {
+  const res = await fetch("/api/auth/csrf");
+  const { csrfToken } = await res.json();
+  await fetch("/api/auth/signout", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ csrfToken, callbackUrl: "/login" }),
+  });
+  window.location.href = "/login";
+}
 
 export default function Home() {
   const { data: summaries, isLoading } = useMonthlySummaries();
@@ -43,7 +53,7 @@ export default function Home() {
             <MessageSquare className="w-5 h-5" />
           </button>
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={handleSignOut}
             className="p-2 rounded-full text-muted hover:text-foreground transition-colors"
             aria-label="Sign out"
           >
