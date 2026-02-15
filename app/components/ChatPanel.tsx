@@ -83,7 +83,7 @@ export default function ChatPanel({
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+        <div className="flex items-center justify-between px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] border-b border-border">
           <h2 className="text-sm font-semibold">Chat</h2>
           <div className="flex items-center gap-1">
             <button
@@ -193,7 +193,7 @@ export default function ChatPanel({
             </div>
 
             {/* Input */}
-            <div className="px-4 py-3 border-t border-border">
+            <div className="px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] border-t border-border">
               {isStreaming ? (
                 <button
                   onClick={onStop}
@@ -209,7 +209,7 @@ export default function ChatPanel({
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Ask about your finances..."
-                    className="flex-1 px-4 py-2 rounded-full bg-card border border-border text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-foreground/30"
+                    className="flex-1 px-4 py-2 rounded-full bg-card border border-border text-[16px] sm:text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-foreground/30"
                   />
                   <button
                     type="submit"

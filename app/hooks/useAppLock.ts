@@ -19,11 +19,13 @@ export function useAppLock() {
   const [isSupported, setIsSupported] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const lastActivityRef = useRef(Date.now());
 
   const isLoginPage = pathname === "/login";
   const isLocalhost = typeof window !== "undefined" && window.location.hostname === "localhost";
+  const skip = isLoginPage || isLocalhost || !hasSession;
 
   const updateActivity = useCallback(() => {
     const now = Date.now();
@@ -31,9 +33,19 @@ export function useAppLock() {
     localStorage.setItem(LAST_ACTIVE_KEY, String(now));
   }, []);
 
-  // Check WebAuthn support and registration on mount
+  // Check for active Google session before enabling lock
   useEffect(() => {
     if (isLoginPage || isLocalhost) return;
+
+    fetch("/api/auth/session")
+      .then((r) => r.json())
+      .then((s) => setHasSession(!!s?.user))
+      .catch(() => setHasSession(false));
+  }, [isLoginPage, isLocalhost]);
+
+  // Check WebAuthn support and registration on mount
+  useEffect(() => {
+    if (skip) return;
 
     isWebAuthnAvailable().then((available) => {
       setIsSupported(available);
@@ -46,22 +58,22 @@ export function useAppLock() {
         }
       }
     });
-  }, [isLoginPage]);
+  }, [skip]);
 
   // Activity listeners
   useEffect(() => {
-    if (isLoginPage || isLocalhost || !isSupported) return;
+    if (skip || !isSupported) return;
 
     const events = ["pointerdown", "keydown", "scroll"] as const;
     events.forEach((e) => window.addEventListener(e, updateActivity, { passive: true }));
     return () => {
       events.forEach((e) => window.removeEventListener(e, updateActivity));
     };
-  }, [isLoginPage, isSupported, updateActivity]);
+  }, [skip, isSupported, updateActivity]);
 
   // Idle check interval
   useEffect(() => {
-    if (isLoginPage || isLocalhost || !isSupported || !isRegistered) return;
+    if (skip || !isSupported || !isRegistered) return;
 
     const id = setInterval(() => {
       if (Date.now() - lastActivityRef.current > IDLE_TIMEOUT) {
@@ -70,11 +82,11 @@ export function useAppLock() {
     }, CHECK_INTERVAL);
 
     return () => clearInterval(id);
-  }, [isLoginPage, isSupported, isRegistered]);
+  }, [skip, isSupported, isRegistered]);
 
   // Visibility change
   useEffect(() => {
-    if (isLoginPage || isLocalhost || !isSupported || !isRegistered) return;
+    if (skip || !isSupported || !isRegistered) return;
 
     function handleVisibility() {
       if (document.visibilityState === "hidden") {
@@ -135,7 +147,7 @@ export function useAppLock() {
   }, []);
 
   return {
-    isLocked: isLoginPage || isLocalhost ? false : isLocked,
+    isLocked: skip ? false : isLocked,
     isSupported,
     isRegistered,
     isAuthenticating,
