@@ -1,3 +1,4 @@
+import { authed } from "@/app/lib/auth";
 import { parseCSV, extractAccountId, inferMonth } from "@/app/lib/csv-parser";
 import { categorize, isInMonth } from "@/app/lib/categorize";
 import { putSummary, putTransactions } from "@/app/lib/dynamodb";
@@ -6,7 +7,7 @@ import type {
   CreditCardTransaction,
 } from "@/app/lib/types";
 
-export async function POST(request: Request) {
+export const POST = authed(async (request) => {
   try {
     const formData = await request.formData();
 
@@ -87,4 +88,4 @@ export async function POST(request: Request) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }
-}
+});

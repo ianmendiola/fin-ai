@@ -1,9 +1,10 @@
+import { authed } from "@/app/lib/auth";
 import { deleteSummary, deleteTransactions } from "@/app/lib/dynamodb";
 
-export async function DELETE(
+export const DELETE = authed(async (
   _request: Request,
   { params }: { params: Promise<{ month: string }> }
-) {
+) => {
   try {
     const { month } = await params;
 
@@ -20,4 +21,4 @@ export async function DELETE(
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }
-}
+});

@@ -1,4 +1,5 @@
 import { Resource } from "sst";
+import { authed } from "@/app/lib/auth";
 import { getAllTransactions, getMemories, putMemories } from "@/app/lib/dynamodb";
 import type { StoredTransactions } from "@/app/lib/types";
 
@@ -43,7 +44,7 @@ function formatTransactions(allTxns: StoredTransactions[]): string {
   return sections.join("\n\n");
 }
 
-export async function POST(req: Request) {
+export const POST = authed(async (req) => {
   try {
     const { messages, financialContext } = (await req.json()) as ChatRequest;
 
@@ -173,4 +174,4 @@ ${transactionDetail}
       headers: { "Content-Type": "application/json" },
     });
   }
-}
+});

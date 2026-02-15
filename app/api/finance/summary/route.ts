@@ -1,6 +1,7 @@
+import { authed } from "@/app/lib/auth";
 import { getAllSummaries } from "@/app/lib/dynamodb";
 
-export async function GET() {
+export const GET = authed(async () => {
   try {
     const summaries = await getAllSummaries();
     summaries.sort((a, b) => b.month.localeCompare(a.month));
@@ -9,4 +10,4 @@ export async function GET() {
     const message = err instanceof Error ? err.message : "Unknown error";
     return Response.json({ error: message }, { status: 500 });
   }
-}
+});
